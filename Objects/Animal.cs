@@ -54,7 +54,6 @@ namespace Shelter.Objects
     }
     public int GetAge()
     {
-      Console.WriteLine(_age);
       return _age;
     }
     public void SetSpecies(string Species)
@@ -79,7 +78,6 @@ namespace Shelter.Objects
       while(rdr.Read())
       {
         int animalId = rdr.GetInt32(0);
-        Console.WriteLine(animalId);
         string animalName = rdr.GetString(1);
         int animalAge = rdr.GetInt32(2);
         string animalSpecies = rdr.GetString(3);
@@ -95,6 +93,81 @@ namespace Shelter.Objects
         conn.Close();
       }
       return allAnimals;
+    }
+
+    public void Save()
+    {
+      SqlConnection conn = DB.Connection();
+      conn.Open();
+
+      SqlCommand cmd = new SqlCommand("INSERT INTO animals (name, age, species) OUTPUT INSERTED.id VALUES (@AnimalName, @AnimalAge, @AnimalSpecies);", conn);
+
+      SqlParameter nameParameter = new SqlParameter();
+      nameParameter.ParameterName = "@AnimalName";
+      nameParameter.Value = this.GetName();
+
+      SqlParameter ageParameter = new SqlParameter();
+      ageParameter.ParameterName = "@AnimalAge";
+      ageParameter.Value = this.GetAge();
+
+      SqlParameter speciesParameter = new SqlParameter();
+      speciesParameter.ParameterName = "@AnimalSpecies";
+      speciesParameter.Value = this.GetSpecies();
+
+      cmd.Parameters.Add(nameParameter);
+      cmd.Parameters.Add(ageParameter);
+      cmd.Parameters.Add(speciesParameter);
+      SqlDataReader rdr = cmd.ExecuteReader();
+
+      while(rdr.Read())
+      {
+        this._id = rdr.GetInt32(0);
+      }
+      if (rdr != null)
+      {
+        rdr.Close();
+      }
+      if(conn != null)
+      {
+        conn.Close();
+      }
+    }
+
+    public static Animal Find(int id)
+    {
+      SqlConnection conn = DB.Connection();
+      conn.Open();
+
+      SqlCommand cmd = new SqlCommand("SELECT * FROM animals WHERE id = @AnimalId;", conn);
+      SqlParameter animalIdParameter = new SqlParameter();
+      animalIdParameter.ParameterName = "@AnimalId";
+      animalIdParameter.Value = id.ToString();
+      cmd.Parameters.Add(animalIdParameter);
+      SqlDataReader rdr = cmd.ExecuteReader();
+
+      int foundAnimalId = 0;
+      int foundAnimalAge = 0;
+      string foundAnimalName = null;
+      string foundAnimalSpecies = null;
+      while(rdr.Read())
+      {
+        foundAnimalId = rdr.GetInt32(0);
+        foundAnimalName = rdr.GetString(1);
+        foundAnimalAge = rdr.GetInt32(2);
+        foundAnimalSpecies = rdr.GetString(3);
+      }
+      Animal foundAnimal = new Animal(foundAnimalName, foundAnimalAge, foundAnimalSpecies, foundAnimalId);
+
+      if (rdr != null)
+      {
+        rdr.Close();
+      }
+      if (conn != null)
+      {
+        conn.Close();
+      }
+
+      return foundAnimal;
     }
 
     public static void DeleteAll()

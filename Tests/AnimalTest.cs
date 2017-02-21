@@ -33,6 +33,48 @@ namespace Shelter
       Assert.Equal(firstAnimal, secondAnimal);
     }
 
+    [Fact]
+    public void Test_Save_SavesToDatabase()
+    {
+      //Arrange
+      Animal testAnimal = new Animal("bubbles", 2, "penguin");
+
+      //Act
+      testAnimal.Save();
+      List<Animal> result = Animal.GetAll();
+      List<Animal> testList = new List<Animal>{testAnimal};
+
+      //Assert
+      Assert.Equal(testList, result);
+    }
+
+    [Fact]
+    public void Test_Save_AssignsIdToObject()
+    {
+      Animal testAnimal = new Animal("bubbles", 2, "penguin");
+
+      testAnimal.Save();
+      Animal savedAnimal = Animal.GetAll()[0];
+
+      int result = savedAnimal.GetId();
+      int testId = testAnimal.GetId();
+      Assert.Equal(testId, result);
+    }
+
+    [Fact]
+    public void Test_FindFindsAnimalInDatabase()
+    {
+      //Arrange
+      Animal testAnimal = new Animal("bubbles", 2, "penguin");
+      testAnimal.Save();
+
+      //Act
+      Animal foundAnimal = Animal.Find(testAnimal.GetId());
+
+      //Assert
+      Assert.Equal(testAnimal, foundAnimal);
+    }
+
     public void Dispose()
     {
       Animal.DeleteAll();
