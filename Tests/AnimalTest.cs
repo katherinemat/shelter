@@ -27,8 +27,8 @@ namespace Shelter
     [Fact]
     public void Test_Equal_ReturnsTrueIfNamesAreTheSame()
     {
-      Animal firstAnimal = new Animal("bubbles", 2, "penguin");
-      Animal secondAnimal = new Animal("bubbles", 2, "penguin");
+      Animal firstAnimal = new Animal("bubbles", 2, 1);
+      Animal secondAnimal = new Animal("bubbles", 2, 1);
 
       Assert.Equal(firstAnimal, secondAnimal);
     }
@@ -37,7 +37,7 @@ namespace Shelter
     public void Test_Save_SavesToDatabase()
     {
       //Arrange
-      Animal testAnimal = new Animal("bubbles", 2, "penguin");
+      Animal testAnimal = new Animal("bubbles", 2, 1);
 
       //Act
       testAnimal.Save();
@@ -51,7 +51,7 @@ namespace Shelter
     [Fact]
     public void Test_Save_AssignsIdToObject()
     {
-      Animal testAnimal = new Animal("bubbles", 2, "penguin");
+      Animal testAnimal = new Animal("bubbles", 2, 1);
 
       testAnimal.Save();
       Animal savedAnimal = Animal.GetAll()[0];
@@ -65,7 +65,7 @@ namespace Shelter
     public void Test_FindFindsAnimalInDatabase()
     {
       //Arrange
-      Animal testAnimal = new Animal("bubbles", 2, "penguin");
+      Animal testAnimal = new Animal("bubbles", 2, 1);
       testAnimal.Save();
 
       //Act

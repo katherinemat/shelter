@@ -9,14 +9,14 @@ namespace Shelter.Objects
     private int _id;
     private string _name;
     private int _age;
-    private string _species;
+    private int _speciesId;
 
-    public Animal(string Name, int Age, string Species, int Id = 0)
+    public Animal(string Name, int Age, int SpeciesId, int Id = 0)
     {
       _id = Id;
       _name = Name;
       _age = Age;
-      _species = Species;
+      _speciesId = SpeciesId;
     }
 
     public override bool Equals(System.Object otherAnimal)
@@ -31,8 +31,8 @@ namespace Shelter.Objects
         bool idEquality = (this.GetId() == newAnimal.GetId());
         bool ageEquality = (this.GetAge() == newAnimal.GetAge());
         bool nameEquality = (this.GetName() == newAnimal.GetName());
-        bool speciesEquality = (this.GetSpecies() == newAnimal.GetSpecies());
-        return (idEquality && ageEquality && nameEquality && speciesEquality);
+        bool speciesIdEquality = (this.GetSpeciesId() == newAnimal.GetSpeciesId());
+        return (idEquality && ageEquality && nameEquality && speciesIdEquality);
       }
     }
 
@@ -56,13 +56,13 @@ namespace Shelter.Objects
     {
       return _age;
     }
-    public void SetSpecies(string Species)
+    public void SetSpeciesId(int SpeciesId)
     {
-      _species = Species;
+      _speciesId = SpeciesId;
     }
-    public string GetSpecies()
+    public int GetSpeciesId()
     {
-      return _species;
+      return _speciesId;
     }
 
     public static List<Animal> GetAll()
@@ -80,8 +80,8 @@ namespace Shelter.Objects
         int animalId = rdr.GetInt32(0);
         string animalName = rdr.GetString(1);
         int animalAge = rdr.GetInt32(2);
-        string animalSpecies = rdr.GetString(3);
-        Animal newAnimal = new Animal(animalName, animalAge, animalSpecies, animalId);
+        int animalSpeciesId = rdr.GetInt32(3);
+        Animal newAnimal = new Animal(animalName, animalAge, animalSpeciesId, animalId);
         allAnimals.Add(newAnimal);
       }
       if(rdr != null)
@@ -100,7 +100,7 @@ namespace Shelter.Objects
       SqlConnection conn = DB.Connection();
       conn.Open();
 
-      SqlCommand cmd = new SqlCommand("INSERT INTO animals (name, age, species) OUTPUT INSERTED.id VALUES (@AnimalName, @AnimalAge, @AnimalSpecies);", conn);
+      SqlCommand cmd = new SqlCommand("INSERT INTO animals (name, age, species_id) OUTPUT INSERTED.id VALUES (@AnimalName, @AnimalAge, @AnimalSpeciesId);", conn);
 
       SqlParameter nameParameter = new SqlParameter();
       nameParameter.ParameterName = "@AnimalName";
@@ -110,13 +110,13 @@ namespace Shelter.Objects
       ageParameter.ParameterName = "@AnimalAge";
       ageParameter.Value = this.GetAge();
 
-      SqlParameter speciesParameter = new SqlParameter();
-      speciesParameter.ParameterName = "@AnimalSpecies";
-      speciesParameter.Value = this.GetSpecies();
+      SqlParameter speciesIdParameter = new SqlParameter();
+      speciesIdParameter.ParameterName = "@AnimalSpeciesId";
+      speciesIdParameter.Value = this.GetSpeciesId();
 
       cmd.Parameters.Add(nameParameter);
       cmd.Parameters.Add(ageParameter);
-      cmd.Parameters.Add(speciesParameter);
+      cmd.Parameters.Add(speciesIdParameter);
       SqlDataReader rdr = cmd.ExecuteReader();
 
       while(rdr.Read())
@@ -148,15 +148,15 @@ namespace Shelter.Objects
       int foundAnimalId = 0;
       int foundAnimalAge = 0;
       string foundAnimalName = null;
-      string foundAnimalSpecies = null;
+      int foundAnimalSpeciesId = 0;
       while(rdr.Read())
       {
         foundAnimalId = rdr.GetInt32(0);
         foundAnimalName = rdr.GetString(1);
         foundAnimalAge = rdr.GetInt32(2);
-        foundAnimalSpecies = rdr.GetString(3);
+        foundAnimalSpeciesId = rdr.GetInt32(3);
       }
-      Animal foundAnimal = new Animal(foundAnimalName, foundAnimalAge, foundAnimalSpecies, foundAnimalId);
+      Animal foundAnimal = new Animal(foundAnimalName, foundAnimalAge, foundAnimalSpeciesId, foundAnimalId);
 
       if (rdr != null)
       {
