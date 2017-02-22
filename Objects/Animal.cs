@@ -100,7 +100,7 @@ namespace Shelter.Objects
       SqlConnection conn = DB.Connection();
       conn.Open();
 
-      SqlCommand cmd = new SqlCommand("INSERT INTO animals (name, age, species_id) OUTPUT INSERTED.id VALUES (@AnimalName, @AnimalAge, @AnimalSpeciesId);", conn);
+      SqlCommand cmd = new SqlCommand("INSERT INTO animals (name, age, species) OUTPUT INSERTED.id VALUES (@AnimalName, @AnimalAge, @AnimalSpeciesId);", conn);
 
       SqlParameter nameParameter = new SqlParameter();
       nameParameter.ParameterName = "@AnimalName";
